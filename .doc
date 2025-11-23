@@ -6,6 +6,22 @@ New-Item src/tools/__init__.py -ItemType File
 New-Item src/utils/__init__.py -ItemType File
 
 
+"Một commit trong Git là một bản ghi chép 
+(snapshot) của toàn bộ thư mục làm việc của bạn tại một thời điểm nhất định.
+Nó là đơn vị lưu trữ cơ bản của Git."
+
+'Commit trên Local (Lưu trữ và Làm việc Cục bộ)
+Khởi tạo Commit: Khi bạn chạy lệnh git commit, 
+bạn đang tạo ra một commit mới trên kho lưu trữ cục bộ (.git directory)
+ trên máy tính của bạn.
+
+Mục đích: Commit này ghi lại các thay đổi bạn đã git add vào khu vực Staging.
+
+Trạng thái: Ở giai đoạn này, commit của bạn đã được lưu trữ an toàn,
+ có thể truy cập và hoàn tác trên máy tính của bạn, 
+ nhưng chưa có trên kho lưu trữ từ xa (remote). 
+ Nếu máy tính của bạn gặp sự cố, commit này sẽ bị mất nếu chưa được đẩy lên.'
+
 git check out main
 git merge develop
 # Neu co xung dot thi giai quyet xung dot
@@ -14,3 +30,90 @@ git commit -m "Merge develop into main"
 # Sau do day len remote
 git push origin main
 
+git fetch origin
+git merge origin/main
+
+#Luu nhung thay doi hien tai vao stagging
+git add .
+# Luu nhung thay doi vao commit, chua 
+git commit -m "Save current chang
+'''Bạn ở main, sửa file A.
+Bạn git checkout develop.
+File A trong thư mục của bạn bây giờ vẫn chứa những thay đổi 
+bạn vừa thực hiện trên main.'''
+'''Git cố gắng giữ nguyên trạng thái thư mục làm việc (
+Working Directory) và Staging Area của bạn khi bạn chuyển sang nhánh khác,
+ miễn là không có xung đột (conflict) nào xảy ra.'''
+
+ '''Để an toàn nhất, thì bạn nên commit hoặc stash những thay đổi hiện tại
+ trước khi chuyển nhánh.
+ git stash
+ git checkout develop
+ sau đó bạn có thể áp dụng lại những thay đổi đã stash nếu cần:
+ git stash pop'''
+
+ '''
+ Lệnh,Mô tả
+git stash list,Xem danh sách tất cả các stash bạn đã lưu.
+git stash show,Xem chi tiết nội dung của stash gần nhất (file nào đã thay đổi).
+git stash show -p,Xem diff (sự khác biệt chi tiết) của stash gần nhất.
+git stash drop,Xóa một stash cụ thể khỏi danh sách (ví dụ: git stash drop stash@{2}).
+git stash clear,Xóa TẤT CẢ các stash (cẩn thận khi sử dụng lệnh này!).'''
+
+'''
+-Các thay đổi chưa được commit (dù đã add hay chưa) 
+chưa phải là một phần của lịch sử nhánh main. 
+Chúng chỉ tồn tại trong Thư mục làm việc (Working Directory)
+ và Khu vực Staging cục bộ của bạn.
+-Git bảo vệ công việc của bạn: Khi bạn git checkout develop, 
+Git cố gắng giữ nguyên trạng thái Thư mục làm việc của bạn. 
+Nó sẽ mang các thay đổi đó theo bạn đến nhánh mới.
+-Nguy cơ bị chặn: Git chỉ cho phép điều này nếu các thay đổi trong file .doc 
+không xung đột với trạng thái đã commit trên nhánh develop.
+
++Nếu file .doc không tồn tại trên develop hoặc không có sự khác biệt
+ ở các dòng code bạn đã sửa, việc chuyển nhánh sẽ thành công, 
+ và thay đổi của bạn sẽ xuất hiện trên develop.
+
++Nếu file .doc có sự khác biệt giữa commit cuối cùng của develop 
+và thay đổi chưa commit của bạn, 
+Git sẽ chặn việc chuyển nhánh và yêu cầu bạn commit hoặc stash trước.
+'''
+
+'Khi bạn đã commit trên nhánh develop nhưng chưa push,
+ Git đã lưu trữ bản ghi đó vào lịch sử cục bộ của develop.'
+
+ 'Khi chuyển sang nhánh fea/a
+ git checkout fea/a
+ Lịch sử được cách ly: Commit của bạn đã là một phần của lịch sử nhánh develop. 
+ Git biết rằng commit đó chỉ thuộc về develop (trong kho lưu trữ cục bộ).
+
+Phục hồi thư mục: Khi chuyển sang fea/a, 
+Git sẽ phục hồi toàn bộ Thư mục làm việc của bạn về đúng trạng thái 
+của commit cuối cùng trên nhánh fea/a.
+
+Kết quả: Các thay đổi bạn vừa commit trên develop 
+sẽ không xuất hiện trên nhánh fea/a. 
+Bạn sẽ bắt đầu công việc trên fea/a với trạng thái code sạch sẽ,
+ dựa trên điểm mà fea/a được tạo ra (thường là từ main hoặc develop cũ).'
+
+'Các thay đổi Chưa được Commit (Working Directory)
+Trạng thái: Các thay đổi bạn vừa gõ (nhưng chưa add hay commit) 
+nằm trong Thư mục làm việc (Working Directory) của Git.
+
+Cơ chế Git: Git coi những thay đổi này là công việc chưa hoàn thành 
+và không thuộc về bất kỳ nhánh nào trong lịch sử commit.
+
+Khi chuyển nhánh (checkout):
+
+Git sẽ cố gắng mang theo những thay đổi này sang nhánh mới (fea/a).
+
+Khi bạn checkout trở lại develop, 
+Git sẽ tiếp tục giữ nguyên những thay đổi đó trong thư mục làm việc của bạn.
+
+Nó sẽ chỉ chặn bạn chuyển nhánh nếu những thay đổi này xung đột với file trên nhánh mới.
+Bước,Lệnh,Nhánh hiện tại,Trạng thái Thư mục làm việc
+B1,Bạn sửa File X,develop,File X bị thay đổi (Unstaged)
+B2,git checkout fea/a,fea/a,File X vẫn giữ nguyên thay đổi (Thay đổi được mang theo)
+B3,Bạn làm việc khác trên fea/a,fea/a,File X vẫn giữ nguyên thay đổi (Và có thể có thêm thay đổi khác)
+B4,git checkout develop,develop,File X vẫn giữ nguyên thay đổi (Thay đổi lại được mang theo ngược về)'
