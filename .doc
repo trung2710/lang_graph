@@ -117,3 +117,47 @@ B1,Bạn sửa File X,develop,File X bị thay đổi (Unstaged)
 B2,git checkout fea/a,fea/a,File X vẫn giữ nguyên thay đổi (Thay đổi được mang theo)
 B3,Bạn làm việc khác trên fea/a,fea/a,File X vẫn giữ nguyên thay đổi (Và có thể có thêm thay đổi khác)
 B4,git checkout develop,develop,File X vẫn giữ nguyên thay đổi (Thay đổi lại được mang theo ngược về)'
+
+
+
+'Khi bạn thực hiện merge (gộp) nhánh develop vào nhánh main, 
+về cơ bản, Git sẽ chuyển lịch sử commit của develop vào main.'
+
+'-Cơ Chế Merge Commit (Mặc định)
++Đây là cách phổ biến và mặc định nhất khi hai nhánh có lịch sử phát triển khác nhau.
+
+Hành động: Git xác định commit cuối cùng trên develop và commit cuối cùng trên main.
+
++Kết quả: Git tạo ra một Merge Commit mới trên nhánh main.
+Commit này có hai commit cha (parent): commit cuối cùng của main 
+và commit cuối cùng của develop.(commit này chứa các thay đổi đã được kết hợp(giải quyết conflict), từ 2 commit cha).
+
++Lịch sử: Tất cả các commit riêng biệt đã được thực hiện trên develop 
+(kể từ lần gộp cuối cùng) sẽ trở thành một phần của lịch sử nhánh main. 
+Bạn có thể thấy toàn bộ lịch sử này khi duyệt log trên nhánh main.
+
+-Cơ Chế Fast-Forward (Nếu main không có thay đổi)
++Nếu nhánh main chưa có bất kỳ commit mới nào kể từ khi develop được tách ra, 
+Git sẽ thực hiện Fast-Forward.
+
++Hành động: Git chỉ đơn giản là di chuyển con trỏ (HEAD) 
+của nhánh main tiến lên để trỏ vào commit cuối cùng của develop.
+
++Kết quả: Không có Merge Commit mới nào được tạo ra. 
+Các commit của develop trực tiếp nằm trên main.
++Lịch sử: Tất cả các commit của develop được thêm vào main một cách tuyến tính.
+
+-Merge với Squash (Tùy chọn)
++Đây là một tùy chọn đặc biệt mà bạn có thể dùng 
+(thường thấy khi merge thông qua Pull Request trên các nền tảng như GitHub/GitLab).
+
++Hành động: Thay vì mang toàn bộ các commit nhỏ lẻ của develop vào main, 
+Git sẽ gộp (squash) tất cả các commit đó thành một commit DUY NHẤT.
+
++Kết quả: Một commit duy nhất chứa tất cả các thay đổi của develop
+ sẽ được thêm vào main.
+
++Lịch sử: Lịch sử main sẽ sạch hơn vì nó chỉ có một commit duy nhất cho toàn bộ tính năng, nhưng các commit nhỏ lẻ của develop không được giữ lại trên main.
+
+-->Tóm lại: Dù là Fast-Forward hay Merge Commit mặc định, 
+có, lịch sử commit của develop sẽ được chuyển vào main.'
