@@ -1,1 +1,16 @@
 mkdir src/nodes, src/model, src/graph, src/tools, src/utils
+New-Item src/nodes/__init__.py -ItemType File
+New-Item src/model/__init__.py -ItemType File
+New-Item src/graph/__init__.py -ItemType File
+New-Item src/tools/__init__.py -ItemType File
+New-Item src/utils/__init__.py -ItemType File
+
+
+git check out main
+git merge develop
+# Neu co xung dot thi giai quyet xung dot
+git add  .
+git commit -m "Merge develop into main"
+# Sau do day len remote
+git push origin main
+
