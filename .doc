@@ -14,3 +14,6 @@ git commit -m "Merge develop into main"
 # Sau do day len remote
 git push origin main
 
+git fetch origin
+git merge origin/main
+
