@@ -44,7 +44,8 @@ def main():
     # print("outline:", state["outline"])
     print("draft content:", state["draft_content"])
     print("count evaluate:", state["count_evaluate"])
-    print("feedback:", state["quality_feedback"][-1])
+    print("feedback:", state["quality_feedback"])
+    print("issues:", state["issues"])
     print("Final content:", state["draft_content"])
 
 

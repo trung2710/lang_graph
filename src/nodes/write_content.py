@@ -27,6 +27,8 @@ def write_content(state: ContentState, api_llm: LLM) -> ContentState:
         - Độ dài: 200-300 từ (KHÔNG vượt quá)
         - Viết bằng tiếng Việt, tự nhiên
         """
+        llm = api_llm.llm
+        response = llm.invoke(prompt)
         return {"draft_content": response.content}
     else:
         """Viết nội dung chi tiết dựa trên outline và research info"""
@@ -50,7 +52,6 @@ def write_content(state: ContentState, api_llm: LLM) -> ContentState:
         - Sử dụng thông tin từ research
         - Độ dài: 200-300 từ (KHÔNG vượt quá)
         - Viết bằng tiếng Việt, tự nhiên"""
-        llm=api_llm.llm
+        llm = api_llm.llm
         response = llm.invoke(prompt)
-        # state["draft_content"] = response.content
         return {"draft_content": response.content}

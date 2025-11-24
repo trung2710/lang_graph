@@ -22,5 +22,5 @@ class ContentState(TypedDict):
     final_content: Optional[str]  # Nội dung cuối cùng
     count_evaluate: Optional[int]  # Số lần viết lại
     yes_no: Optional[str]  # Đánh giá có đạt chất lượng hay không
-    quality_feedback: Annotated[List[str], operator.add] = []
+    quality_feedback: Optional[str]  # Nhận xét chất lượng
     issues: Optional[str]  # Vấn đề cần sửa trong bài viết
