@@ -81,7 +81,7 @@ def build_graph(llm : LLM):
     graph.add_edge("write_content", "call_elevator")
     graph.add_conditional_edges("call_elevator", route_decision, {
         "yes": "review_content",
-        "no": "review_content"
+        "no": "write_content"
     })
     graph.add_edge("review_content", END)
     
