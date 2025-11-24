@@ -1,12 +1,7 @@
 from src.graph.state import ContentState
 from src.model import LLM
-from dotenv import load_dotenv
-import os
-load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-api_llm = LLM(api_key=GEMINI_API_KEY, model_name="gemini-2.0-flash", max_tokens=1024, temperature=1.0)
-llm=api_llm.llm
-def analyze_topic(state: ContentState) -> ContentState:
+
+def analyze_topic(state: ContentState, api_llm : LLM) -> ContentState:
     """Phân tích chủ đề, trích xuất từ khóa, xác định loại content"""
     topic = state["topic"]
     
@@ -19,7 +14,7 @@ def analyze_topic(state: ContentState) -> ContentState:
     Trả về theo format:
     CONTENT_TYPE: [loại]
     KEYWORDS: [từ khóa, cách nhau bởi dấu phẩy]"""
-    
+    llm=api_llm.llm
     response = llm.invoke(prompt)
     content = response.content
     

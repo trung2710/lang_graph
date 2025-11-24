@@ -161,3 +161,9 @@ Git sẽ gộp (squash) tất cả các commit đó thành một commit DUY NH�
 
 -->Tóm lại: Dù là Fast-Forward hay Merge Commit mặc định, 
 có, lịch sử commit của develop sẽ được chuyển vào main.'
+
+Để xóa .env khỏi staging area (undo git add .env):
+git restore --staged .env//git reset .env
+sau dó : 
+git rm --cached .env
+git commit -m "Remove .env from tracking"
