@@ -1,7 +1,7 @@
 from langgraph.graph import  END, START, StateGraph
 from src.model import LLM
 from .state import ContentState
-from src.nodes import analyze_topic, generate_outline, research_info,write_content 
+from src.nodes import analyze_topic, generate_outline, research_info,write_content , review_content
 
 def build_graph(llm : LLM):
     graph=StateGraph(ContentState)
@@ -18,18 +18,22 @@ def build_graph(llm : LLM):
 
     def write_content_node(state: ContentState) -> ContentState:
         return write_content(state=state, api_llm=llm)
+    def review_content_node(state: ContentState) -> ContentState:
+        return review_content(state=state, api_llm=llm)
     # Thêm các nút vào đồ thị
     graph.add_node("analyze_topic",analyze_topic_node)
     graph.add_node("research_info", research_info_node)
     graph.add_node("generate_outline", generate_outline_node)
     graph.add_node("write_content", write_content_node)
+    graph.add_node("review_content", review_content_node)
     # Kết nối các nút với nhau
     graph.add_edge(START, "analyze_topic")
     graph.add_edge("analyze_topic", "research_info")
     graph.add_edge("analyze_topic", "generate_outline")
     graph.add_edge("generate_outline","write_content")
     graph.add_edge("research_info","write_content")
-    graph.add_edge("write_content", END)
+    graph.add_edge("write_content", "review_content")
+    graph.add_edge("review_content", END)
     
     return graph
 
