@@ -167,3 +167,7 @@ git restore --staged .env//git reset .env
 sau dó : 
 git rm --cached .env
 git commit -m "Remove .env from tracking"
+
+.env sẽ bị xóa khỏi repo
+File .env vẫn còn trên máy của bạn (không bị xóa)
+Lần tới, .env sẽ tự động bị ignore.
