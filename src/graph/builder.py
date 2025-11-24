@@ -1,8 +1,19 @@
+from typing import Literal
 from langgraph.graph import  END, START, StateGraph
+from pydantic import BaseModel, Field
 from src.model import LLM
 from .state import ContentState
 from src.nodes import analyze_topic, generate_outline, research_info,write_content , review_content
-
+class Feedback(BaseModel):
+    grade: Literal["yes", "no"] = Field(
+        description="quyết định xem bài viết có chất lượng hay không",
+    )
+    feedback: str = Field(
+        description="nhận xét chi tiết về bài viết dựa trên chất lượng nội dung",
+    )
+    issues: str = Field(
+        description="vấn đề cần sửa trong bài viết",
+    )
 def build_graph(llm : LLM):
     graph=StateGraph(ContentState)
     
@@ -20,6 +31,34 @@ def build_graph(llm : LLM):
         return write_content(state=state, api_llm=llm)
     def review_content_node(state: ContentState) -> ContentState:
         return review_content(state=state, api_llm=llm)
+    def call_elevator(state: ContentState):
+        if state.get("count_evaluate", 0) >=1:
+            return {"yes_no": "yes"}
+        else:
+            content=state["draft_content"]
+            evaluator=llm.llm.with_structured_output(Feedback)
+            prompt = f"""Đánh giá chất lượng bài viết sau dựa trên 4 tiêu chí:
+
+            BÀI VIẾT:
+            {content}
+
+            TIÊU CHÍ ĐÁNH GIÁ (mỗi tiêu chí 0-25 điểm):
+            1. Nội dung liên quan: Bài có trả lời đúng chủ đề không?
+            2. Cấu trúc rõ ràng: Bài có intro, body, conclusion không?
+            3. Ngữ pháp & chính tả: Có lỗi gì không?
+            4. Sâu sắc & chi tiết: Có đủ thông tin, ví dụ không?
+            
+            Trả về format:
+            GRADE: [yes, no]
+            FEEDBACK: [nhận xét chi tiết]
+            ISSUES: [vấn đề cần sửa]"""
+            response=evaluator.invoke(prompt)
+            return {"yes_no": response.grade, "quality_feedback": response.feedback, "issues": response.issues, "count_evaluate": state.get("count_evaluate",0)+1}
+    def route_decision(state: ContentState) -> str:
+        if state["yes_no"] == "yes":
+            return "yes"
+        else:
+            return "no"
     # Thêm các nút vào đồ thị
     graph.add_node("analyze_topic",analyze_topic_node)
     graph.add_node("research_info", research_info_node)
@@ -32,7 +71,11 @@ def build_graph(llm : LLM):
     graph.add_edge("analyze_topic", "generate_outline")
     graph.add_edge("generate_outline","write_content")
     graph.add_edge("research_info","write_content")
-    graph.add_edge("write_content", "review_content")
+    graph.add_conditional_edges("write_content", route_decision, {
+        "yes": "review_content",
+        "no": "write_content"
+    })
+    # graph.add_edge("write_content", "review_content")
     graph.add_edge("review_content", END)
     
     return graph
